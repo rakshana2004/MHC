@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maddy</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(45deg, #8A4DFF, #D5A1FF); /* Violet to cream gradient */
+            background-size: 300% 300%;
+            animation: gradient 15s ease infinite;
+        }
+
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .chat-container {
+            width: 100%;
+            height: 89vh;
+            display: flex;
+            flex-direction: column;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        /* Chat header with profile */
+        .chat-header {
+            background: #B39DDB;  /* Soft violet */
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+        }
+
+        .chat-header img {
+            width: 45px;
+            height: 45px;
+            margin-left: 4%;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .chat-header .chat-id {
+            font-size: 20px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .chat-box {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .message {
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin: 5px 10px;
+            max-width: 75%;
+            word-wrap: break-word;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .user {
+            background-color: #9A7DF9;  /* Soft violet */
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 0;
+        }
+
+        .user i {
+            margin-left: 10px; 
+        }
+
+        .bot {
+            background-color: #F1E5FF;  /* Light cream */
+            color: black;
+            align-self: flex-start;
+            border-bottom-left-radius: 0;
+            position: relative;
+        }
+
+        .bot .typing {
+            position: absolute;
+            bottom: 5px;
+            left: 10px;
+            font-size: 12px;
+        }
+
+        .input-box {
+            display: flex;
+            padding: 15px;
+            background: #fff;
+            border-top: 1px solid #ccc;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            box-shadow: 0px -4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 25px;
+            font-size: 16px;
+            background-color: #f9f9f9;
+            transition: background-color 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            background-color: #e3e3e3;
+        }
+
+        button {
+            margin-left: 10px;
+            padding: 12px 20px;
+            border: none;
+            background: #9A7DF9;  /* Violet button color */
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s ease-in-out;
+        }
+
+        button:hover {
+            background: #7F67D6;  /* Darker violet on hover */
+        }
+
+        .message i {
+            font-size: 20px;
+            margin-right: 10px;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="chat-container">
+    <!-- Chat Header with Profile -->
+    <div class="chat-header">
+        <img src="dpi.jpg" alt="Profile Picture">
+        <div class="chat-id">Maddy</div>
+    </div>
+
+    <div id="chat-box" class="chat-box"></div>
+    <div class="input-box">
+        <input type="text" id="user-input" placeholder="Type your message..." onkeypress="handleKeyPress(event)">
+        <button onclick="sendMessage()">Send</button>
+        
+    </div>
+</div>
+
+<script>
+    const responses = {
+    "hi": "Hello! 😊 How are you feeling today?",
+    "hello": "Hey there! How’s your day going? 🌞",
+    "how are you?": "I’m here and ready to chat! More importantly, how are *you* feeling today? 💜",
+    "i am fine": "That’s great to hear! If there’s anything on your mind, I’m always here to listen. 💖",
+    "what can you do?": "I’m here to support you emotionally! Whether you’re feeling happy, sad, anxious, or just want to chat, I’ll be here for you. 💙",
+    "thank you": "You’re very welcome! 😊 Remember, you’re not alone.",
+    "what’s your name?": "I’m your friendly mental health chatbot, always here to listen and support you! 💜",
+    "how was your day?": "I don’t have a day like you do, but my goal is to make *your* day better! Tell me, how’s your day going? 😊",
+    "i feel happy": "That’s wonderful! What’s making you happy today? 🌸",
+    "i feel okay": "That’s good! If you ever want to talk about something, I’m here. 💛",
+    "i feel sad": "I’m here for you. Sometimes, just talking about it helps. Do you want to share what’s on your mind? 💕",
+    "i am feeling better": "That’s great news! Keep taking care of yourself, and know that I’m always here if you need to talk. 💙",
+    "i feel anxious": "It’s okay to feel anxious. Let’s take a deep breath together. Inhale… hold… and exhale. Feeling a little better? 💜",
+    "i am overthinking": "I hear you. Try shifting your focus—listen to music, journal your thoughts, or take a walk. Overthinking doesn’t define you. 🌿",
+    "i feel overwhelmed": "I understand. Try breaking things down into smaller tasks and take things one step at a time. You got this! 💖",
+    "how do i stop worrying?": "Worrying is natural, but it doesn’t have to control you. Try grounding yourself—focus on your senses, breathe deeply, and remind yourself that you are safe. 💙",
+    "i can't sleep": "That sounds frustrating. Try a relaxing bedtime routine—dim the lights, listen to calming sounds, or take deep breaths. Sweet dreams! 🌙",
+    "i have nightmares": "Nightmares can be distressing. Try writing them down, keeping a light on, or listening to soft music before bed. You are safe. 💜",
+    "my mind won’t stop racing at night": "I hear you. Try focusing on  slow, deep breaths or gentle stretching before bed. Your thoughts don’t control you. 🌿",
+    "i feel lonely": "I’m really sorry you feel this way. You’re not alone. Maybe reach out to a friend, journal your thoughts, or do something you enjoy. 💛",
+    "i have no one to talk to": "That sounds tough. Please know that I’m here to listen, and you deserve to be heard. 💜",
+    "i feel left out": "Feeling left out can be painful. Your worth isn’t defined by others. You are valued, even if it doesn’t feel that way. 💖",
+    "i feel hopeless": "I know things feel hard right now, but brighter days are ahead. You are stronger than you think. 💖",
+    "i feel empty": "Feeling empty can be confusing. Try engaging in something small that brings you even a little joy—reading, listening to music, or stepping outside. 🌿",
+    "does it get better?": "Yes, it does. Emotions come in waves, and though things feel dark now, the light will return. You are not alone. 💙",
+    "i feel like crying": "Crying is a natural way to release emotions. Let it out if you need to. You are safe here. 💜",
+    "i feel stressed": "Stress can be overwhelming. Try taking a break, practicing deep breathing, or doing something you love. You're doing your best! 🌿",
+    "how can i be happy?": "Happiness is a journey, not a destination. Start by finding small things that bring you joy every day. 🌸",
+    "i feel worthless": "You are valuable, just as you are. Your feelings matter, and you deserve kindness and support. 💖",
+    "i feel like giving up": "I'm so sorry you're feeling this way. Please know that your life is valuable, and there are people who care about you. 💜",
+    "i need motivation": "You are stronger than you think! Take it one step at a time and believe in yourself. You've got this! 💪",
+    "i feel guilty": "Guilt can be a heavy burden. Try to forgive yourself and learn from the experience. You deserve kindness, even from yourself. 💜",
+    "i feel unworthy": "You *are* worthy. Your feelings matter, and you deserve love and support. 💖",
+    "i am scared": "It’s okay to feel scared. Try taking deep breaths and reminding yourself that you are safe. I’m here for you. 💙",
+    "i have no motivation": "That’s okay. Start small, even just getting up and stretching. Motivation builds with action. 💪",
+    "i feel drained": "I hear you. Rest is important—give yourself permission to take a break and recharge. 🌿",
+    "i feel angry": "Anger is a valid emotion. Try to express it in a healthy way—writing, exercise, or deep breathing might help. 💜",
+    "i feel stuck": "Feeling stuck is tough. Try changing your routine, setting small goals, or talking it out. You’ll find your way. 💛",
+    "i feel rejected": "Rejection hurts, but it doesn’t define you. You are enough, just as you are. 💖",
+    "i feel anxious in social situations": "That’s completely understandable. Try grounding techniques like deep breathing or focusing on something calming. 💙",
+    "i feel pressure to be perfect": "Perfection isn’t real, but you are. You are doing your best, and that is enough. 💜",
+    "i want to talk to someone": "I’m here for you. You deserve to be heard. 💕",
+    "i feel unappreciated": "You matter more than you realize. You are valued, even if others don’t always show it. 💖",
+    "i feel overwhelmed with work": "Try breaking tasks into smaller steps and taking breaks. You’re doing your best! 💪",
+    "i feel like a failure": "You are not a failure. Mistakes help us grow. Be kind to yourself. 💙",
+    "i have panic attacks": "Panic attacks can be scary. Try grounding yourself—focus on slow breaths, hold onto something comforting, and remind yourself it will pass. 💜",
+    "how do i love myself?": "Self-love takes time. Start with small acts of kindness toward yourself and acknowledge your worth. You are enough. 💖",
+    "i feel misunderstood": "That must be frustrating. You deserve to be heard. Try expressing your feelings to someone you trust. 💙",
+    "Can period cramps affect my mood?": "Yes, hormonal changes during your menstrual cycle can lead to mood swings, irritability, anxiety, or even feelings of depression. The discomfort of cramps can also add to stress and frustration.",
+    "Why do I feel more emotional when I have cramps?": "Hormonal fluctuations, especially in estrogen and progesterone, impact neurotransmitters like serotonin and dopamine, which regulate mood. Low serotonin levels can make you feel sad or anxious.",
+    "Can period pain cause anxiety or panic attacks?": "Yes, for some people, intense cramps can trigger anxiety or even panic attacks, especially if they feel overwhelming or unmanageable. Stress from pain can also make breathing irregular, worsening anxiety symptoms.",
+    "How can I manage stress and mood swings during my period?": "Practice deep breathing or meditation,Engage in light exercise like yoga or walking,Get enough rest and sleep,Eat magnesium-rich foods (like nuts and dark chocolate) to help with relaxation,Use heat therapy to soothe the pain and promote relaxation",
+    "Why do I feel exhausted when I have cramps?": "Pain drains energy, and hormonal changes can lead to fatigue. The body works harder to shed the uterine lining, and discomfort can make it harder to sleep well, leading to exhaustion.",
+    "Can period pain trigger depressive thoughts?" : "Yes, especially in people who already experience depression or mood disorders. The combination of pain, hormonal fluctuations, and fatigue can contribute to feelings of sadness or hopelessness.",
+    "How do I stay mentally strong during period cramps?": "Acknowledge that it's okay to feel off,Distract yourself with light activities or hobbies,Practice self-care, like a warm bath or gentle stretching,Reach out to friends or family for support,If symptoms are overwhelming, talk to a healthcare professional",
+    "What are the common signs of depression?":"Depression can manifest in different ways, including:Persistent sadness or emptiness,Loss of interest in activities once enjoyed,Fatigue and low energy,Difficulty sleeping or sleeping too much,Feelings of worthlessness or guilt,Trouble concentrating or making decisions,Thoughts of self-harm or suicide (seek help immediately if you have these thoughts)",
+    "Why do I feel depressed even when nothing is wrong?": "Depression isn’t always linked to external events. It can be caused by chemical imbalances in the brain, genetic factors, past trauma, chronic stress, or even medical conditions like thyroid disorders.",
+    "How can I cope with depression on my own?": "Engage in small, achievable tasks each day,Try light exercise or go for a walk,Practice deep breathing or meditation,Keep a journal to process your thoughts,Stay connected with friends or loved ones,Get sunlight and fresh air",
+    "Is it normal to feel hopeless during depression?": "Yes, depression often makes it hard to see a way forward. However, feelings of hopelessness are a symptom, not reality. With the right support and treatment, things can improve.",
+    "When should I seek professional help?": "If your symptoms last more than two weeks,If depression is affecting your daily life, work, or relationships,If you have thoughts of self-harm or suicide (seek immediate help from a mental health professional or helpline)",
+    "Can diet and lifestyle changes help with depression?": "Yes, small changes can make a big difference:Eating balanced meals with omega-3s, B vitamins, and magnesium,Regular exercise, which releases feel-good chemicals like endorphins,Creating a sleep routine to improve rest,Reducing stress through mindfulness or hobbies",
+    "Can depression go away on its own?": "For some, mild depression may improve over time, but for many, professional help (therapy, medication, or both) is needed. Ignoring depression can make it worse, so early support is key",
+    "What should I do if I feel like I can’t talk to anyone?": "Start by writing down your feelings to process them,Reach out to an anonymous helpline or online support group,Consider professional therapy, which offers a judgment-free space,Remember, you’re not alone—help is available, and people care about you",
+    "default": "I'm not sure I understand that. Could you try rephrasing? 😊"
+}
+
+    function sendMessage() {
+        let userInput = document.getElementById("user-input").value.trim().toLowerCase();
+        if (userInput === "") return;
+
+        addMessage(userInput, "user");
+
+        // Show typing animation for the bot response
+        let botMessageElement = addMessage("...", "bot");
+
+        setTimeout(() => {
+            botMessageElement.innerHTML = `<i class="fas fa-robot"></i>${responses[userInput] || responses["default"]}`;
+            botMessageElement.querySelector('.typing').remove();  // Remove typing animation
+        }, 1500);  // Simulate delay for bot typing
+
+        document.getElementById("user-input").value = "";
+    }
+
+    function handleKeyPress(event) {
+        if (event.key === "Enter") {
+            sendMessage();
+        }
+    }
+
+    function addMessage(text, sender) {
+        let chatBox = document.getElementById("chat-box");
+        let messageElement = document.createElement("div");
+        messageElement.classList.add("message", sender);
+
+        // Add icons for bot and user
+        if (sender === "user") {
+            messageElement.innerHTML = `<i class="fas fa-user"></i>${text}`;
+        } else {
+            messageElement.innerHTML = `<i class="fas fa-robot"></i>${text} <span class="typing">...</span>`;
+        }
+
+        chatBox.appendChild(messageElement);
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        return messageElement;  // Return the bot message element for later updates
+    }
+
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+
+    recognition.continuous = true;
+    recognition.interimResults = true;
+
+</script>
+
+</body>
+</html>

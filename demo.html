@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mental Healthcare Chatbot</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="login.html">
+    <style>
+        body {
+            background: linear-gradient(45deg, #D8B1D1, #F1E1D0, #C5A4D2, #B3A0C2, #F1E1D0, #C5A4D2);
+            background-size: 300% 300%;
+            animation: gradient 15s ease infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #6A4E98;
+        }
+
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            padding: 50px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            font-weight: 700;
+            color: #6A4E98;
+        }
+
+        p {
+            font-size: 20px;
+            margin-bottom: 30px;
+            opacity: 0.9;
+            color: #9C6FB4;
+        }
+
+        .btn-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 15px 35px;
+            font-size: 20px;
+            font-weight: bold;
+            text-decoration: none;
+            background: #B39DDB;
+            color: white;
+            border-radius: 30px;
+            transition: 0.3s;
+            width: 100%;
+            max-width: 350px;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background: #9C6FB4;
+            transform: scale(1.05);
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .features {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 50px;
+            flex-wrap: wrap;
+        }
+
+        .feature {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 25px;
+            border-radius: 15px;
+            width: 28%;
+            margin: 15px 0;
+            text-align: center;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            transition: 0.3s;
+        }
+
+        .feature:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: translateY(-5px);
+            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature h2 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #6A4E98;
+        }
+
+        .feature p {
+            font-size: 16px;
+            color: #9C6FB4;
+        }
+
+        .feature i {
+            font-size: 40px;
+            margin-bottom: 10px;
+            color: #D1A0D1;
+        }
+
+        @media (max-width: 768px) {
+            .features {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .feature {
+                width: 80%;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to Your Mental Healthcare Chatbot</h1>
+        <p>Your AI-powered assistant for emotional support, mental health guidance, and expert help.</p>
+        <div class="btn-container">
+            <a href="chatpage.html" class="btn">Chat With Maddy</a>
+            <a href="tip.html" class="btn">Mental Health Tips</a>
+            <a href="maindoc.html" class="btn">Expert Details</a>
+        </div>
+        <div class="features" id="tips">
+            <div class="feature">
+                <i class="fas fa-heart"></i>
+                <h2>Self Care Tips</h2>
+                <p>Learn how to manage stress and anxiety with daily self-care routines.</p>
+            </div>
+            <div class="feature">
+                <i class="fas fa-balance-scale"></i>
+                <h2>Mindfulness</h2>
+                <p>Explore mindfulness techniques to help you stay grounded in difficult moments.</p>
+            </div>
+            <div class="feature" id="expert">
+                <i class="fas fa-user-md"></i>
+                <h2>Talk to an Expert</h2>
+                <p>Get connected with a mental health professional for immediate guidance.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
